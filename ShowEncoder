@@ -1,0 +1,69 @@
+// include library codes:
+#include <Wire.h>
+#include <Adafruit_RGBLCDShield.h>
+#include <Encoder.h>
+
+// Motor pins
+#define E1 9 
+#define M1 8 
+#define E2 6 
+#define M2 7 
+
+// Encoder pins
+#define Enc1A 2   // left side yellow
+#define Enc1B 4   // right side white
+#define Enc2A 3   // right side yellow
+#define Enc2B 5   // left side white
+
+// The LCD shield uses the I2C SCL and SDA pins. On the Arduino Uno
+// these are Analog pins 4 and 5 so you can't use those for analogRead() any more.
+// However, you can connect other I2C sensors to the I2C bus and share
+// the I2C bus.
+Adafruit_RGBLCDShield lcd = Adafruit_RGBLCDShield();
+
+// Change these pin numbers to the pins connected to the motor encoder.
+//   Best Performance: both pins have interrupt capability
+//   Good Performance: only the first pin has interrupt capability
+//   Low Performance:  neither pin has interrupt capability
+Encoder motorLeftEnc(Enc1A, Enc1B);
+Encoder motorRightEnc(Enc2A, Enc2B);
+
+unsigned long last;
+
+// Use these two PWM values to make the Rover drive straight
+const char leftPWM = 255;
+const char rightPWM = 255;
+
+void setup() {
+  // Motor driver pins
+  pinMode(E1, OUTPUT);
+  pinMode(E2, OUTPUT);
+  pinMode(M1, OUTPUT);
+  pinMode(M2, OUTPUT);
+
+  // Encoder pins
+  pinMode(Enc1A, INPUT);
+  pinMode(Enc1B, INPUT);
+  pinMode(Enc2A, INPUT);
+  pinMode(Enc2B, INPUT);
+
+  // set up the LCD's number of columns and rows: 
+  lcd.begin(16, 2);
+
+  // initialize motor drivers
+  digitalWrite(E1, LOW);
+  digitalWrite(E2, LOW);
+  digitalWrite(M1, LOW);
+  digitalWrite(M2, LOW);
+}  
+
+void loop() {
+
+    lcd.setCursor(0,1);
+    lcd.print("L= ");
+    lcd.print(motorLeftEnc.read() );
+    lcd.print(" R= ");
+    lcd.print(motorRightEnc.read() ); 
+    lcd.print("     ");
+}
+
